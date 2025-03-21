@@ -1,6 +1,5 @@
 name: Build and Publish Docker Image
 
-# Trigger the workflow on push events to the main branch
 on:
   push:
     branches:
@@ -31,29 +30,14 @@ jobs:
         uses: docker/login-action@v2
         with:
           registry: ghcr.io
-          # The GitHub token is automatically provided by GitHub Actions
-          # No need to specify username and password manually
-          # For public repositories, this is sufficient
-          # For private repositories, ensure the GITHUB_TOKEN has write permissions
-          # To push to a different registry, adjust accordingly
-          # See https://github.com/docker/login-action for more options
-          # In this case, we're using the default GITHUB_TOKEN
-          # which should have the necessary permissions
-          # If you need to use a Personal Access Token (PAT), you can set it as a secret
-          # and reference it here
-          # username: ${{ github.actor }}
-          # password: ${{ secrets.GITHUB_TOKEN }}
-    
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
       # 4. Extract repository and image information
       - name: Extract metadata (tags, labels)
         id: meta
         uses: docker/metadata-action@v4
         with:
-          # The image name should be in the format ghcr.io/OWNER/REPOSITORY
-          # Replace 'OWNER' with your GitHub username or organization
-          # 'REPOSITORY' is usually the name of your repository
-          # Alternatively, you can use context values provided by GitHub Actions
-          # such as github.repository to dynamically generate the image name
           images: ghcr.io/${{ github.repository }}
           tags: |
             type=semver,pattern={{version}}
@@ -64,13 +48,10 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
-          # The image name extracted from the metadata step
-          # By default, it pushes to 'ghcr.io/OWNER/REPO'
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           # Optionally, set build arguments or cache settings here
-          # For example:
           # build-args: |
           #   ENV=production
           # cache-from: type=gha
@@ -78,6 +59,4 @@ jobs:
 
       # 6. Optional: Display the pushed image name
       - name: Print Image Info
-        run: echo "Image pushed to ${IMAGE_NAME}"
-        env:
-          IMAGE_NAME: ${{ steps.meta.outputs.tags }}
+        run: echo "Image pushed to ${{ steps.meta.outputs.tags }}"

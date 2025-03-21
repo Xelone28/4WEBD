@@ -48,6 +48,10 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
+          # Specify the build context and Dockerfile location
+          context: ./ticketing_api
+          file: ./ticketing_api/Dockerfile
+          
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}

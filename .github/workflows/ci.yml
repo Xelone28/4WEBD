@@ -25,20 +25,20 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      # 3. Log in to GitHub Container Registry
-      - name: Log in to GitHub Container Registry
+      # 3. Log in to Docker Hub
+      - name: Log in to Docker Hub
         uses: docker/login-action@v2
         with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: docker.io
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       # 4. Extract repository and image information
       - name: Extract metadata (tags, labels)
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images: ghcr.io/${{ github.repository }}
+          images: docker.io/${{ secrets.DOCKERHUB_USERNAME }}/4webd
           tags: |
             type=semver,pattern={{version}}
             type=ref,event=branch
@@ -48,18 +48,16 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
-          # Specify the build context and Dockerfile location
           context: ./ticketing_api
           file: ./ticketing_api/Dockerfile
-          
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          # Optionally, set build arguments or cache settings here
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          # Optionally, set build arguments here
           # build-args: |
           #   ENV=production
-          # cache-from: type=gha
-          # cache-to: type=gha,mode=max
 
       # 6. Optional: Display the pushed image name
       - name: Print Image Info

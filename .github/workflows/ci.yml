@@ -1,12 +1,14 @@
+# .github/workflows/build_and_publish.yml
+
 name: Build and Publish Docker Image
 
 on:
   push:
     branches:
       - main
-    # Optionally, trigger on tags for versioned releases
-    # tags:
-    #   - 'v*.*.*'
+    # Uncomment the following to trigger on versioned tags
+    tags:
+      - 'v*.*.*'
 
 jobs:
   build_and_push:
@@ -21,7 +23,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 2. Set up QEMU for multi-arch builds
+      # 2. Set up QEMU for multi-arch builds (optional)
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
         with:
@@ -44,7 +46,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images: docker.io/${{ secrets.DOCKERHUB_USERNAME }}/4webd
+          images: docker.io/${{ secrets.DOCKERHUB_USERNAME }}/4webdmailer
           tags: |
             type=semver,pattern={{version}}
             type=ref,event=branch
@@ -54,9 +56,9 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
-          context: ./ticketing_api
-          file: ./ticketing_api/Dockerfile
-          platforms: linux/amd64,linux/arm64
+          context: ./mailer-service          # Path to your mailer-service directory
+          file: ./mailer-service/Dockerfile  # Path to your Dockerfile
+          platforms: linux/amd64,linux/arm64 # Adjust based on your needs
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}

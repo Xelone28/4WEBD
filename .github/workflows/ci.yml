@@ -1,12 +1,9 @@
-# .github/workflows/build_and_publish.yml
-
-name: Build and Publish Docker Image
+name: Build and Publish Docker Images
 
 on:
   push:
     branches:
       - main
-    # Uncomment the following to trigger on versioned tags
     tags:
       - 'v*.*.*'
 
@@ -18,22 +15,22 @@ jobs:
       contents: read
       packages: write
 
+    strategy:
+      matrix:
+        image: ['4webd', '4webdmailer']
+
     steps:
-      # 1. Checkout the repository
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 2. Set up QEMU for multi-arch builds (optional)
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
         with:
           platforms: all
 
-      # 3. Set up Docker Buildx
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      # 4. Log in to Docker Hub
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
         with:
@@ -41,30 +38,27 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      # 5. Extract metadata for tagging
       - name: Extract metadata (tags, labels)
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images: docker.io/${{ secrets.DOCKERHUB_USERNAME }}/4webdmailer
+          images: docker.io/${{ secrets.DOCKERHUB_USERNAME }}/${{ matrix.image }}
           tags: |
             type=semver,pattern={{version}}
             type=ref,event=branch
             type=raw,value=latest
 
-      # 6. Build and push Docker image for multiple architectures
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
-          context: ./mailer-service          # Path to your mailer-service directory
-          file: ./mailer-service/Dockerfile  # Path to your Dockerfile
-          platforms: linux/amd64,linux/arm64 # Adjust based on your needs
+          context: ${{ matrix.image == '4webd' && './ticketing_api' || './mailer-service' }}
+          file: ${{ matrix.image == '4webd' && './ticketing_api/Dockerfile' || './mailer-service/Dockerfile' }}
+          platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      # 7. Optional: Display the pushed image tags
       - name: Print Image Info
         run: echo "Image pushed to ${{ steps.meta.outputs.tags }}"

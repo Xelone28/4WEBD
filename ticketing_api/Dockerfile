@@ -2,8 +2,6 @@ FROM python:3.12
 
 WORKDIR /app
 
-ENV DATABASE_URL=postgresql+asyncpg://pgsql_webd:pgsql_webd@localhost/webd
-
 RUN pip install poetry \
     && poetry config virtualenvs.create false
 

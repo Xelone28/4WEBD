@@ -1,5 +1,9 @@
 from pydantic import BaseSettings, Field
 
+import os
+
+print(f"Environment DATABASE_URL: {os.environ.get('DATABASE_URL')}")
+
 class Settings(BaseSettings):
     DATABASE_URL: str = Field(..., env="DATABASE_URL")
 
@@ -7,6 +11,7 @@ class Settings(BaseSettings):
         env_file = ".env"
         env_file_encoding = 'utf-8'
         case_sensitive = True
+
 
 settings = Settings()
 

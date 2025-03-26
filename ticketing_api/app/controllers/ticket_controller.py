@@ -24,15 +24,9 @@ async def create_ticket(ticket_data: TicketCreate, db: AsyncSession = Depends(ge
     return ticket
 
 @router.get("/{ticket_id}", response_model=TicketRead)
-async def get_ticket(ticket_id: int, db: AsyncSession = Depends(get_db)):
-    """ Retrieve ticket details """
-    ticket_service = TicketService(db)
-    ticket = await ticket_service.get_ticket(ticket_id)
-    
-    if not ticket:
-        raise HTTPException(status_code=404, detail="Ticket not found.")
-    
-    return ticket
+    async def get_ticket(self, ticket_id: int) -> Ticket | None:
+        result = await self.db.execute(select(Ticket).where(Ticket.id == ticket_id))
+        return result.scalars().first()
 
 @router.get("/user/{user_id}", response_model=List[TicketRead])
 async def get_tickets_by_user(user_id: int, db: AsyncSession = Depends(get_db)):

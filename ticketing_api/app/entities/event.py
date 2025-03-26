@@ -1,9 +1,7 @@
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 from datetime import datetime
-from sqlalchemy.ext.declarative import declarative_base
-
-Base = declarative_base()
+from app.database.base import Base
 
 class Event(Base):
     __tablename__ = "events"
@@ -19,3 +17,5 @@ class Event(Base):
     updated_at = Column(DateTime, default=datetime.utcnow)
 
     tickets = relationship("Ticket", back_populates="event")
+
+from .ticket import Ticket

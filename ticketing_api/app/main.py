@@ -1,9 +1,8 @@
 from fastapi import FastAPI
-from app.controllers import user_controller, event_controller
+from app.controllers import user_controller, event_controller, ticket_controller
 from app.database.database import engine
-from app.entities.user import Base as UserBase
-from app.entities.event import Base as EventBase
-from app.entities.ticket import Base as TicketBase
+from app.database.base import Base  # ← base commune pour tous les modèles
+from app.entities import *  # ← force l'import de tous les modèles pour éviter les erreurs de mapping
 import uvicorn
 
 app = FastAPI(
@@ -12,21 +11,20 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# Include routers
+# Routers
 app.include_router(user_controller.router)
 app.include_router(event_controller.router)
+app.include_router(ticket_controller.router)
 
 @app.get("/")
 async def root():
     return {"message": "Welcome to the Ticketing System API"}
 
-# Create database tables
+# Initialisation de la base de données au démarrage
 @app.on_event("startup")
 async def startup():
     async with engine.begin() as conn:
-        await conn.run_sync(UserBase.metadata.create_all)
-        await conn.run_sync(EventBase.metadata.create_all)
-        await conn.run_sync(TicketBase.metadata.create_all)
+        await conn.run_sync(Base.metadata.create_all)
 
 if __name__ == "__main__":
     uvicorn.run("app.main:app", host="0.0.0.0", port=8000, reload=True)

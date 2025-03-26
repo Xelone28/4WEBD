@@ -1,9 +1,7 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
-from sqlalchemy.ext.declarative import declarative_base
 from datetime import datetime
-
-Base = declarative_base()
+from app.database.base import Base
 
 class Ticket(Base):
     __tablename__ = "tickets"
@@ -16,3 +14,6 @@ class Ticket(Base):
 
     event = relationship("Event", back_populates="tickets")
     owner = relationship("User", back_populates="tickets")
+
+from .user import User
+from .event import Event

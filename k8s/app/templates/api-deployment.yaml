@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-api
+spec:
+  replicas: {{ .Values.api.replicaCount }}
+  selector:
+    matchLabels:
+      app: api
+  template:
+    metadata:
+      labels:
+        app: api
+    spec:
+      containers:
+      - name: api
+        image: "{{ .Values.api.image.repository }}:{{ .Values.api.image.tag }}"
+        ports:
+        - containerPort: 8000
+        env:
+        - name: TEST_VAR
+          value: "sdfghjkl"
+        - name: DATABASE_URL
+          value: "postgresql+asyncpg://pgsql_webd:pgsql_webd@app-postgres:5432/webd"
+        - name: RABBITMQ_HOST
+          value: "{{ .Release.Name }}-rabbitmq"
+        - name: RABBITMQ_PORT
+          value: "5672"
+        - name: RABBITMQ_USERNAME
+          value: "guest"
+        - name: RABBITMQ_PASSWORD
+          value: "guest"
+
+        # resources:
+        #   limits:
+        #     cpu: {{ .Values.api.resources.limits.cpu }}
+        #     memory: {{ .Values.api.resources.limits.memory }}
+        #   requests:
+        #     cpu: {{ .Values.api.resources.requests.cpu }}
+        #     memory: {{ .Values.api.resources.requests.memory }}
+        # readinessProbe:
+        #   httpGet:
+        #     path: /health
+        #     port: 8000
+        #   initialDelaySeconds: 10
+        #   periodSeconds: 5
+        # livenessProbe:
+        #   httpGet:
+        #     path: /health
+        #     port: 8000
+        #   initialDelaySeconds: 15
+        #   periodSeconds: 10

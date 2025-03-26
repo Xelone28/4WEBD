@@ -1,9 +1,5 @@
 from pydantic import BaseSettings, Field
 
-import os
-
-print(f"Environment DATABASE_URL: {os.environ.get('DATABASE_URL')}")
-
 class Settings(BaseSettings):
     DATABASE_URL: str = Field(..., env="DATABASE_URL")
 
@@ -14,6 +10,3 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
-
-# Ajoutez ceci pour le débogage
-print(f"Loaded DATABASE_URL: {settings.DATABASE_URL}")

@@ -7,12 +7,11 @@ from app.schemas.ticket_schemas import TicketCreate
 import uuid
 
 class TicketService:
-    def __init__(self, db: AsyncSession):
-        self.db = db
 
-    async def create_ticket(self, ticket_data: TicketCreate) -> Ticket:
+    @staticmethod
+    async def create_ticket(db: AsyncSession, ticket_data: TicketCreate) -> Ticket:
         """ Create a ticket if available tickets exist for the event """
-        event = await self.db.execute(select(Event).where(Event.id == ticket_data.event_id))
+        event = await db.execute(select(Event).where(Event.id == ticket_data.event_id))
         event = event.scalars().first()
 
         if not event:
@@ -33,13 +32,14 @@ class TicketService:
         # Update available tickets
         event.available_tickets -= 1
 
-        self.db.add(new_ticket)
-        await self.db.commit()
-        await self.db.refresh(new_ticket)
+        db.add(new_ticket)
+        await db.commit()
+        await db.refresh(new_ticket)
         return new_ticket
-
-    async def get_ticket(self, ticket_id: int) -> dict:
-        result = await self.db.execute(
+    
+    @staticmethod
+    async def get_ticket(db: AsyncSession, ticket_id: int) -> dict:
+        result = await db.execute(
             select(Ticket, Event.name, User.email)
             .join(Event, Ticket.event_id == Event.id)
             .join(User, Ticket.user_id == User.id)
@@ -54,26 +54,27 @@ class TicketService:
             "user_id": ticket.user_id,
             "purchase_date": ticket.purchase_date
         }
-
-    async def get_tickets_by_user(self, user_id: int) -> list[Ticket]:
+    
+    @staticmethod
+    async def get_tickets_by_user(db: AsyncSession, user_id: int) -> list[Ticket]:
         """ Retrieve all tickets for a given user """
-        result = await self.db.execute(select(Ticket).where(Ticket.user_id == user_id))
+        result = await db.execute(select(Ticket).where(Ticket.user_id == user_id))
         return result.scalars().all()
-
-    async def delete_ticket(self, ticket_id: int) -> bool:
+    
+    @staticmethod
+    async def delete_ticket(db: AsyncSession, ticket_id: int) -> bool:
         """ Cancel a ticket and restore the event's availability """
-        ticket = await self.db.execute(select(Ticket).where(Ticket.id == ticket_id))
+        ticket = await db.execute(select(Ticket).where(Ticket.id == ticket_id))
         ticket = ticket.scalars().first()
 
         if not ticket:
             return False
 
-        # Restore available tickets for the event
-        event = await self.db.execute(select(Event).where(Event.id == ticket.event_id))
+        event = await db.execute(select(Event).where(Event.id == ticket.event_id))
         event = event.scalars().first()
         if event:
-            event.available_tickets += 1  # Restore ticket availability
+            event.available_tickets += 1
 
-        await self.db.delete(ticket)
-        await self.db.commit()
+        await db.delete(ticket)
+        await db.commit()
         return True

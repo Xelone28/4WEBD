@@ -95,7 +95,6 @@ data:
     -- -----------------------------------------------------
     -- Ajouter le droit admin à l'utilisateur lou-anne
     -- -----------------------------------------------------
-
     -- Créer l'utilisateur lou-anne avec le statut admin
     INSERT INTO public.users
     (email, hashed_password, first_name, last_name, is_admin) -- Inclure is_admin dans l'INSERT
@@ -107,6 +106,7 @@ data:
     -- Ajouter plusieurs événements d'artistes de rap français récents
     -- -----------------------------------------------------
 
+    -- Créer un événement
     INSERT INTO public.events
     (name, description, location, date, total_tickets, available_tickets)
     VALUES

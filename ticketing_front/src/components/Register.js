@@ -8,27 +8,27 @@ import { useNavigate } from 'react-router-dom';
 const Register = () => {
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
+    const [first_name, setFirst_name] = useState('');
+    const [last_name, setLast_name] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState(null);
 
     const handleRegister = async (e) => {
         e.preventDefault();
-
+    
         if (password !== confirmPassword) {
             setError("Passwords do not match!");
             return;
         }
-
+    
         const userData = {
             email,
-            firstName,
-            lastName,
+            first_name,
+            last_name,
             password
         };
-
+    
         try {
             const response = await fetch(`${process.env.REACT_APP_API_URL}/users`, {
                 method: "POST",
@@ -37,11 +37,12 @@ const Register = () => {
                 },
                 body: JSON.stringify(userData)
             });
-
+    
             if (!response.ok) {
-                throw new Error("Registration failed. Please try again.");
+                const errorData = await response.json();
+                throw new Error(errorData.detail || "Registration failed. Please try again.");
             }
-
+    
             navigate('/login'); 
         } catch (error) {
             setError(error.message);
@@ -74,8 +75,8 @@ const Register = () => {
                         <input 
                             type="text" 
                             placeholder="First Name" 
-                            value={firstName} 
-                            onChange={(e) => setFirstName(e.target.value)} 
+                            value={first_name} 
+                            onChange={(e) => setFirst_name(e.target.value)} 
                             required
                         />
                     </div>
@@ -85,8 +86,8 @@ const Register = () => {
                         <input 
                             type="text" 
                             placeholder="Last Name" 
-                            value={lastName} 
-                            onChange={(e) => setLastName(e.target.value)} 
+                            value={last_name} 
+                            onChange={(e) => setLast_name(e.target.value)} 
                             required
                         />
                     </div>

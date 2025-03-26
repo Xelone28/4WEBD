@@ -15,7 +15,7 @@ const Login = () => {
         e.preventDefault();
     
         const formData = new FormData();
-        formData.append("email", email);
+        formData.append("username", email);
         formData.append("password", password);
     
         try {

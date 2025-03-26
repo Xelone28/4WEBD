@@ -78,6 +78,12 @@ const EventDetails = () => {
                         </div>
                         <p className="event-details-progress-text">{soldPercentage}% of tickets sold</p>
                     </div>
+
+                    <div className="event-details-action">
+                        <button className="event-details-buy-ticket-btn" onClick={() => navigate(`/payment/${id}`)}>
+                            Buy one ticket
+                        </button>
+                    </div>
                 </div>
             </div>
 

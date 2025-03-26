@@ -4,7 +4,7 @@ import "../css/EventCard.css";
 
 const formatDate = (dateStr) => {
     const date = new Date(dateStr);
-    return date.toLocaleDateString("fr-FR", {
+    return date.toLocaleDateString("en-US", {
         weekday: "short",
         day: "numeric",
         month: "long",
@@ -35,7 +35,7 @@ const EventCard = ({ event }) => {
                         />
                     </div>
                     <span className="progress-text">
-                        {available_tickets} billets restants / {total_tickets}
+                        {available_tickets} tickets remaining / {total_tickets}
                     </span>
                 </div>
             </div>

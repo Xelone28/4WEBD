@@ -4,17 +4,60 @@ import { useNavigate } from "react-router-dom";
 
 const Header = () => {
     const navigate = useNavigate();
+    const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("token"));
+
+    useEffect(() => {
+        const checkAuth = async () => {
+            const token = localStorage.getItem("token");
+            setIsLoggedIn(!!token);
+
+            if (token) {
+                try {
+                    const response = await fetch(`${process.env.REACT_APP_API_URL}/users/me`, {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    });
+
+                    if (!response.ok) {
+                        throw new Error("Failed to fetch user data");
+                    }
+
+                } catch (error) {
+                    console.error("Error fetching user data:", error);
+                }
+            }
+        };
+
+        checkAuth();
+        window.addEventListener("storage", checkAuth);
+
+        return () => {
+            window.removeEventListener("storage", checkAuth);
+        };
+    }, []);
 
     return (
         <header className="header">
             <div className="header-content">
-                <h2 className="logo">TicketTac</h2>
+                <h2 className="header-name">TicketTac</h2>
                 <div className='header-links'>
                     <nav>
                         <ul>
                             <li onClick={() => { navigate("/"); }}>Billets</li>
                         </ul>
                     </nav>
+                    <div>
+                        {isLoggedIn ? (
+                            <button className="header-profile" onClick={() => { navigate("/profile"); }}>
+                                My Profile
+                            </button>
+                        ) : (
+                            <button className="header-login" onClick={() => { navigate("/login"); }}>
+                                Sign In
+                            </button>
+                        )}
+                    </div>
                 </div>
             </div>
         </header>

@@ -93,6 +93,28 @@
     color: #666;
 }
 
+.event-details-action {
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+}
+
+.event-details-buy-ticket-btn {
+    padding: 1rem 2rem;
+    font-size: 1rem;
+    background: #1b1b83;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s ease;
+}
+
+.event-details-buy-ticket-btn:hover {
+    background: #0f0f6a;
+}
+
 .loading,
 .error-message {
     text-align: center;

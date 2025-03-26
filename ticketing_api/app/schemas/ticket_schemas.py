@@ -1,21 +1,22 @@
+# schemas/ticket_schemas.py
+
 from pydantic import BaseModel
-from datetime import datetime
 from typing import Optional
+from datetime import datetime
 
-
-class TicketCreate(BaseModel):
-    """ Schema for creating a ticket """
-    event_id: int
-    user_id: int
-
-
-class TicketRead(BaseModel):
-    """ Schema for reading ticket details """
-    id: int
+class TicketBase(BaseModel):
     ticket_number: str
     event_id: int
+    purchase_date: Optional[datetime] = None
+
+class TicketCreate(TicketBase):
+    pass
+
+class TicketRead(TicketBase):
+    id: int
     user_id: int
-    purchase_date: datetime
+    created_at: datetime
+    updated_at: datetime
 
     class Config:
-        from_attributes = True  
+        orm_mode = True

@@ -13,8 +13,7 @@ router = APIRouter(
 @router.post("/", response_model=TicketRead, status_code=status.HTTP_201_CREATED)
 async def create_ticket(ticket_data: TicketCreate, db: AsyncSession = Depends(get_db)):
     """ Create a new ticket """
-    ticket_service = TicketService(db)
-    ticket = await ticket_service.create_ticket(ticket_data)
+    ticket = await TicketService.create_ticket(db, ticket_data)
 
     if ticket is None:
         raise HTTPException(status_code=404, detail="Event not found.")
@@ -24,24 +23,19 @@ async def create_ticket(ticket_data: TicketCreate, db: AsyncSession = Depends(ge
     return ticket
 
 @router.get("/{ticket_id}", response_model=TicketRead)
-    async def get_ticket(self, ticket_id: int) -> Ticket | None:
-        result = await self.db.execute(select(Ticket).where(Ticket.id == ticket_id))
-        return result.scalars().first()
+async def get_ticket(ticket_id: int, db: AsyncSession = Depends(get_db)):
+    return await TicketService.get_ticket(db, ticket_id)
 
 @router.get("/user/{user_id}", response_model=List[TicketRead])
 async def get_tickets_by_user(user_id: int, db: AsyncSession = Depends(get_db)):
     """ Retrieve all tickets for a user """
-    ticket_service = TicketService(db)
-    tickets = await ticket_service.get_tickets_by_user(user_id)
-    
-    return tickets
+    return await TicketService.get_tickets_by_user(db, user_id)    
 
 @router.delete("/{ticket_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_ticket(ticket_id: int, db: AsyncSession = Depends(get_db)):
     """ Cancel a ticket """
-    ticket_service = TicketService(db)
-    success = await ticket_service.delete_ticket(ticket_id)
-
+    success = await TicketService.delete_ticket(db, ticket_id)
+    
     if not success:
         raise HTTPException(status_code=404, detail="Ticket not found.")
     

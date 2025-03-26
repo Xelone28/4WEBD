@@ -23,6 +23,8 @@ CREATE TABLE IF NOT EXISTS events (
     description TEXT,
     location VARCHAR(255),
     date TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    total_tickets INTEGER NOT NULL,
+    available_tickets INTEGER NOT NULL,
     created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW()
 );
@@ -83,25 +85,13 @@ FOR EACH ROW
 EXECUTE FUNCTION update_timestamp();
 
 INSERT INTO public.users
-(id, email, hashed_password, first_name, last_name)
-VALUES(1, 'admin@example.com', 'hashed_password', 'Admin', 'User');
-
-INSERT INTO public.users
-(id, email, hashed_password, first_name, last_name)
-VALUES(2, 'lougautr@gmail.com', 'password', 'Lou-Anne', 'Gautherie');
+(email, hashed_password, first_name, last_name)
+VALUES('lougautr@gmail.com', 'password', 'Lou-Anne', 'Gautherie');
 
 INSERT INTO public.events
-(id, name, description, location, date)
-VALUES(1, 'Chambre 140 Tour PLK ', 'La tournée Chambre 140 Tour 2025 de PLK passe à Paris à L Accor Arena à Paris ', 'Accor Arena - Paris', '2025-11-15 20:00:00');
-
-INSERT INTO public.events
-(id, name, description, location, date)
-VALUES(2, 'Chaque seconde tour Pierre Garnier ', 'La tournée Chaque seconde tour de Pierre Garnier passe à Caen au Zénith de Caen', 'Zénith de Caen - Caen', '2025-08-29 19:30:00');
+(name, description, location, date, total_tickets, available_tickets)
+VALUES('Chambre 140 Tour PLK ', 'La tournée Chambre 140 Tour 2025 de PLK passe à Paris à L Accor Arena à Paris ', 'Accor Arena - Paris', '2025-11-15 20:00:00', 1000, 200);
 
 INSERT INTO public.tickets
-(id, ticket_number, event_id, user_id, purchase_date)
-VALUES(1, '1203', 1, 2, '2025-03-20 10:14:56');
-
-INSERT INTO public.tickets
-(id, ticket_number, event_id, user_id, purchase_date)
-VALUES(2, '1852', 2, 2, '2025-01-17 10:27:26');
+(ticket_number, event_id, user_id, purchase_date)
+VALUES('1203', 1, 1, '2025-03-20 10:14:56');

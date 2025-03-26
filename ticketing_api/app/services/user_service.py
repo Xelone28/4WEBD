@@ -19,7 +19,7 @@ class UserService:
         db_user = User(
             email=user.email,
             hashed_password=hashed_password,
-            first_name=user.first_name
+            first_name=user.first_name,
             last_name=user.last_name
         )
         self.db.add(db_user)

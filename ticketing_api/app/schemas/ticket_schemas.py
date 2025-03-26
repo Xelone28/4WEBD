@@ -15,7 +15,6 @@ class TicketRead(BaseModel):
     ticket_number: str
     event_id: int
     user_id: int
-    user_email: Optional[str] = None  
     purchase_date: datetime
 
     class Config:

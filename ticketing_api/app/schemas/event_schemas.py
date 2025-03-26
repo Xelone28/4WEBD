@@ -8,6 +8,7 @@ class EventBase(BaseModel):
     location: str
     date: datetime
     total_tickets: int
+    available_tickets: int
 
 class EventCreate(EventBase):
     pass
@@ -18,6 +19,7 @@ class EventUpdate(BaseModel):
     location: Optional[str] = None
     date: Optional[datetime] = None
     total_tickets: Optional[int] = None
+    available_tickets: Optional[int] = None
 
 class EventRead(EventBase):
     id: int

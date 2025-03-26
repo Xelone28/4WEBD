@@ -1,0 +1,39 @@
+.header {
+    background-color: #1b1b83;
+    padding: 1rem 2rem;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    align-items: center;
+}
+
+.logo {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #FF6B00;
+    cursor: pointer;
+}
+
+.header-links ul {
+    list-style: none;
+    display: flex;
+    gap: 2rem;
+}
+
+.header-links li {
+    cursor: pointer;
+    color: white;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.header-links li:hover {
+    color: #FF6B00;
+}

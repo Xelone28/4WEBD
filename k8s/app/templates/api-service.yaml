@@ -1,14 +1,15 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Release.Name }}-api
+  name: fastapi-service
   labels:
-    app: api
+    app: fastapi
 spec:
-  type: ClusterIP  # Utiliser NodePort ou LoadBalancer selon les besoins
+  type: ClusterIP
   ports:
-    - port: 80             # Port sur lequel le service sera exposé
-      targetPort: 8000     # Port du conteneur où l'application écoute
+    - port: 80
+      targetPort: 8000
       protocol: TCP
+      name: http
   selector:
-    app: api
+    app: fastapi

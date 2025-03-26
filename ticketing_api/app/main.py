@@ -4,11 +4,23 @@ from app.database.database import engine
 from app.database.base import Base  # ← base commune pour tous les modèles
 from app.entities import *  # ← force l'import de tous les modèles pour éviter les erreurs de mapping
 import uvicorn
+from fastapi.middleware.cors import CORSMiddleware
+
 
 app = FastAPI(
     title="Ticketing System API",
     description="API for handling concerts and events tickets.",
     version="1.0.0"
+)
+# Define allowed origins (CORS policy)
+origins = ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # Routers

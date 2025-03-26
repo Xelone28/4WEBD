@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List
-from app.schemas.user_schemas import UserCreate, UserRead
+from app.schemas.user_schemas import UserCreate, UserRead, UserUpdate
 from app.services.user_service import UserService
 from app.database.database import get_db
 from app.security import get_current_user, verify_password, create_access_token
@@ -50,3 +50,33 @@ async def login_user(form_data: OAuth2PasswordRequestForm = Depends(), db: Async
 
     access_token = create_access_token(data={"sub": str(user.id)}, expires_delta=timedelta(minutes=60))
     return {"access_token": access_token, "token_type": "bearer"}
+
+@router.put("/{user_id}", response_model=UserRead)
+async def update_user(
+    user_id: int,
+    user_update: UserUpdate,
+    db: AsyncSession = Depends(get_db),
+    current_user: UserRead = Depends(get_current_user)
+):
+    """
+    Update a user's information.
+    - Les utilisateurs peuvent mettre à jour leurs propres informations.
+    - Seuls les administrateurs peuvent donner ou retirer les droits administrateur.
+    """
+    user = await UserService.get_user(db, user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found.")
+
+    # Vérifier si l'utilisateur actuel tente de mettre à jour un autre utilisateur sans être admin
+    if current_user.id != user_id and not current_user.is_admin:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Access forbidden.")
+
+    # Si une tentative de mise à jour de 'is_admin' est faite, vérifier que l'utilisateur actuel est admin
+    if user_update.is_admin is not None and not current_user.is_admin:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Only administrators can modify admin status."
+        )
+
+    updated_user = await UserService.update_user(db, user, user_update)
+    return updated_user

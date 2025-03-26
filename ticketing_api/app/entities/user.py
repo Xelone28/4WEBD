@@ -15,6 +15,3 @@ class User(Base):
     updated_at = Column(DateTime, default=datetime.utcnow)
 
     tickets = relationship("Ticket", back_populates="owner")
-
-# ✅ Import différé à la fin pour résoudre le lien circulaire
-from .ticket import Ticket

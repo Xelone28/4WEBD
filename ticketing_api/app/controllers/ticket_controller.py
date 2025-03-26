@@ -35,8 +35,7 @@ async def get_tickets_by_user(user_id: int, db: AsyncSession = Depends(get_db)):
 async def delete_ticket(ticket_id: int, db: AsyncSession = Depends(get_db)):
     """ Cancel a ticket """
     success = await TicketService.delete_ticket(db, ticket_id)
-    
+
     if not success:
         raise HTTPException(status_code=404, detail="Ticket not found.")
-    
     return

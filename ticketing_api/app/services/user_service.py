@@ -1,40 +1,58 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-from sqlalchemy.orm import selectinload
 from passlib.context import CryptContext
 from app.entities.user import User
-from app.schemas.user_schemas import UserCreate
+from app.schemas.user_schemas import UserCreate, UserRead
+from typing import Optional, List
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 class UserService:
-    def __init__(self, db: AsyncSession):
-        self.db = db
-
-    def hash_password(self, password: str) -> str:
+    
+    @staticmethod
+    def hash_password(password: str) -> str:
         return pwd_context.hash(password)
 
-    async def create_user(self, user: UserCreate) -> User:
-        hashed_password = self.hash_password(user.password)
+    @staticmethod
+    async def create_user(db: AsyncSession, user: UserCreate) -> UserRead:
+        hashed_password = UserService.hash_password(user.password)
+
         db_user = User(
             email=user.email,
             hashed_password=hashed_password,
             first_name=user.first_name,
             last_name=user.last_name
         )
-        self.db.add(db_user)
-        await self.db.commit()
-        await self.db.refresh(db_user)
+        db.add(db_user)
+        await db.commit()
+        await db.refresh(db_user)
+        return UserRead.from_orm(db_user)
+    
+    @staticmethod
+    async def get_user_by_email(db: AsyncSession, email: str) -> Optional[UserRead]:
+        result = await db.execute(select(User).where(User.email == email))
+        db_user = result.scalars().first()
+        if db_user:
+            return UserRead.from_orm(db_user)
+        return None
+    
+    @staticmethod
+    async def get_user_by_email_raw(db: AsyncSession, email: str) -> User:
+        """Use this function for login only."""
+        result = await db.execute(select(User).where(User.email == email))
+        db_user = result.scalars().first()
         return db_user
-
-    async def get_user_by_email(self, email: str) -> User:
-        result = await self.db.execute(select(User).where(User.email == email))
-        return result.scalars().first()
-
-    async def get_user(self, user_id: int) -> User:
-        result = await self.db.execute(select(User).where(User.id == user_id))
-        return result.scalars().first()
-
-    async def get_all_users(self) -> list[User]:
-        result = await self.db.execute(select(User))
-        return result.scalars().all()
+    
+    @staticmethod
+    async def get_user(db: AsyncSession, user_id: int) -> Optional[UserRead]:
+        result = await db.execute(select(User).where(User.id == user_id))
+        db_user = result.scalars().first()
+        if db_user:
+            return UserRead.from_orm(db_user)
+        return None
+    
+    @staticmethod
+    async def get_all_users(db: AsyncSession) -> List[UserRead]:
+        result = await db.execute(select(User))
+        users = result.scalars().all()
+        return [UserRead.from_orm(user) for user in users]

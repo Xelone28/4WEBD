@@ -13,6 +13,7 @@ data:
         hashed_password VARCHAR(255) NOT NULL,
         first_name VARCHAR(100),
         last_name VARCHAR(100),
+        is_admin BOOLEAN DEFAULT FALSE, -- Nouvelle colonne ajoutée
         created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW(),
         updated_at TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW()
     );
@@ -90,14 +91,34 @@ data:
     FOR EACH ROW
     EXECUTE FUNCTION update_timestamp();
 
-    INSERT INTO public.users
-    (email, hashed_password, first_name, last_name)
-    VALUES('lougautr@gmail.com', 'password', 'Lou-Anne', 'Gautherie');
+    -- -----------------------------------------------------
+    -- Ajouter le droit admin à l'utilisateur lou-anne
+    -- -----------------------------------------------------
 
+    -- Créer l'utilisateur lou-anne
+    INSERT INTO public.users
+    (email, hashed_password, first_name, last_name, is_admin) -- Inclure is_admin dans l'INSERT
+    VALUES('lougautr@gmail.com', 'password', 'Lou-Anne', 'Gautherie', TRUE);
+
+    -- Créer un événement
     INSERT INTO public.events
     (name, description, location, date, total_tickets, available_tickets)
-    VALUES('Chambre 140 Tour PLK ', 'La tournée Chambre 140 Tour 2025 de PLK passe à Paris à L Accor Arena à Paris ', 'Accor Arena - Paris', '2025-11-15 20:00:00', 1000, 200);
+    VALUES('Chambre 140 Tour PLK', 'La tournée Chambre 140 Tour 2025 de PLK passe à Paris à Accor Arena à Paris', 'Accor Arena - Paris', '2025-11-15 20:00:00', 1000, 200);
 
+    -- Créer un ticket
     INSERT INTO public.tickets
     (ticket_number, event_id, user_id, purchase_date)
     VALUES('1203', 1, 1, '2025-03-20 10:14:56');
+
+    -- -----------------------------------------------------
+    -- Vérification des Modifications
+    -- -----------------------------------------------------
+
+    -- Vérifier que la colonne is_admin a bien été ajoutée
+    -- (Cette commande est spécifique à psql et peut être utilisée pour vérifier la structure de la table)
+    -- \d+ public.users
+
+    -- Vérifier que l'utilisateur lou-anne est bien administrateur
+    SELECT id, email, is_admin
+    FROM public.users
+    WHERE email = 'lougautr@gmail.com';

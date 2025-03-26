@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 const Header = () => {
     const navigate = useNavigate();
     const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("token"));
+    const [isAdmin, setIsAdmin] = useState(false);
 
     useEffect(() => {
         const checkAuth = async () => {
@@ -23,9 +24,14 @@ const Header = () => {
                         throw new Error("Failed to fetch user data");
                     }
 
+                    const userData = await response.json();
+                    setIsAdmin(userData.is_admin || false);
+
                 } catch (error) {
                     console.error("Error fetching user data:", error);
                 }
+            } else {
+                setIsAdmin(false);
             }
         };
 
@@ -45,6 +51,9 @@ const Header = () => {
                     <nav>
                         <ul>
                             <li onClick={() => { navigate("/"); }}>Tickets</li>
+                            {isAdmin && (
+                                <li onClick={() => { navigate("/"); }}>Events</li>
+                            )}
                         </ul>
                     </nav>
                     <div>

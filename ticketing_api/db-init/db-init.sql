@@ -3,16 +3,15 @@
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
-    username VARCHAR(50) UNIQUE NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
     hashed_password VARCHAR(255) NOT NULL,
-    full_name VARCHAR(100),
+    first_name VARCHAR(100),
+    last_name VARCHAR(100),
     created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW()
 );
 
 -- Indexes for users
-CREATE INDEX IF NOT EXISTS idx_users_username ON users (username);
 CREATE INDEX IF NOT EXISTS idx_users_email ON users (email);
 
 -- -----------------------------------------------------
@@ -23,14 +22,14 @@ CREATE TABLE IF NOT EXISTS events (
     name VARCHAR(100) NOT NULL,
     description TEXT,
     location VARCHAR(255),
-    event_date TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    date TIMESTAMP WITHOUT TIME ZONE NOT NULL,
     created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW()
 );
 
 -- Indexes for events
 CREATE INDEX IF NOT EXISTS idx_events_name ON events (name);
-CREATE INDEX IF NOT EXISTS idx_events_event_date ON events (event_date);
+CREATE INDEX IF NOT EXISTS idx_events_date ON events (date);
 
 -- -----------------------------------------------------
 -- Table: tickets
@@ -82,3 +81,27 @@ CREATE TRIGGER trigger_update_tickets_updated_at
 BEFORE UPDATE ON tickets
 FOR EACH ROW
 EXECUTE FUNCTION update_timestamp();
+
+INSERT INTO public.users
+(id, email, hashed_password, first_name, last_name)
+VALUES(1, 'admin@example.com', 'hashed_password', 'Admin', 'User');
+
+INSERT INTO public.users
+(id, email, hashed_password, first_name, last_name)
+VALUES(2, 'lougautr@gmail.com', 'password', 'Lou-Anne', 'Gautherie');
+
+INSERT INTO public.events
+(id, name, description, location, date)
+VALUES(1, 'Chambre 140 Tour PLK ', 'La tournée Chambre 140 Tour 2025 de PLK passe à Paris à L Accor Arena à Paris ', 'Accor Arena - Paris', '2025-11-15 20:00:00');
+
+INSERT INTO public.events
+(id, name, description, location, date)
+VALUES(2, 'Chaque seconde tour Pierre Garnier ', 'La tournée Chaque seconde tour de Pierre Garnier passe à Caen au Zénith de Caen', 'Zénith de Caen - Caen', '2025-08-29 19:30:00');
+
+INSERT INTO public.tickets
+(id, ticket_number, event_id, user_id, purchase_date)
+VALUES(1, '1203', 1, 2, '2025-03-20 10:14:56');
+
+INSERT INTO public.tickets
+(id, ticket_number, event_id, user_id, purchase_date)
+VALUES(2, '1852', 2, 2, '2025-01-17 10:27:26');

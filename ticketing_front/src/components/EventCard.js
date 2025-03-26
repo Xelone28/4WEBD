@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from 'react-router-dom';
 import "../css/EventCard.css";
 
 const formatDate = (dateStr) => {
@@ -14,12 +15,13 @@ const formatDate = (dateStr) => {
 };
 
 const EventCard = ({ event }) => {
+    const navigate = useNavigate();
     const { name, description, location, date, available_tickets, total_tickets } = event;
 
     const soldPercentage = 100 - Math.round((available_tickets / total_tickets) * 100);
 
     return (
-        <div className="event-card">
+        <div className="event-card" onClick={() => navigate(`/event/${event.id}`)}>
             <div className="event-card-content">
                 <h3 className="event-title">{name}</h3>
                 <p className="event-date">{formatDate(date)}</p>

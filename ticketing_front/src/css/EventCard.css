@@ -8,6 +8,7 @@
     width: 100%;
     max-width: 600px;
     transition: transform 0.2s ease;
+    cursor: pointer;
 }
 
 .event-card:hover {

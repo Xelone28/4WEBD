@@ -7,14 +7,17 @@ import { FaMapMarkerAlt, FaCalendarAlt, FaTicketAlt, FaChevronLeft } from 'react
 
 const formatDate = (dateStr) => {
     const date = new Date(dateStr);
-    return date.toLocaleDateString("fr-FR", {
+    const options = {
         weekday: "long",
         day: "numeric",
         month: "long",
-        year: "numeric",
+        year: "numeric"
+    };
+    const timeOptions = {
         hour: "2-digit",
-        minute: "2-digit",
-    });
+        minute: "2-digit"
+    };
+    return `${date.toLocaleDateString("en-US", options)} at ${date.toLocaleTimeString("en-US", timeOptions)}`;
 };
 
 const EventDetails = () => {
@@ -28,7 +31,7 @@ const EventDetails = () => {
             try {
                 const response = await fetch(`${process.env.REACT_APP_API_URL}/events/${id}`);
                 if (!response.ok) {
-                    throw new Error('Erreur lors du chargement de l’événement');
+                    throw new Error('Error loading event');
                 }
                 const data = await response.json();
                 setEvent(data);
@@ -41,7 +44,7 @@ const EventDetails = () => {
     }, [id]);
 
     if (error) return <div className="error-message">{error}</div>;
-    if (!event) return <div className="loading">Chargement...</div>;
+    if (!event) return <div className="loading">Loading...</div>;
 
     const { name, location, description, date, available_tickets, total_tickets } = event;
 
@@ -52,7 +55,7 @@ const EventDetails = () => {
             <Header />
 
             <div className="event-details-component">
-                <button className="event-details-back-btn" onClick={() => navigate('/')}><FaChevronLeft /><span>Retour à la liste</span></button>
+                <button className="event-details-back-btn" onClick={() => navigate('/')}><FaChevronLeft /><span>Back to list</span></button>
 
                 <div className="event-details-container">
                 
@@ -69,11 +72,11 @@ const EventDetails = () => {
                     </div>
 
                     <div className="event-details-ticket-info">
-                        <p className='event-details-remaining-tickets'><FaTicketAlt /> <span>{available_tickets} billets restants</span></p>
+                        <p className='event-details-remaining-tickets'><FaTicketAlt /> <span>{available_tickets} tickets remaining</span></p>
                         <div className="event-details-ticket-progress-bar">
                             <div className="filled" style={{ width: `${soldPercentage}%` }}></div>
                         </div>
-                        <p className="event-details-progress-text">{soldPercentage}% des billets vendus</p>
+                        <p className="event-details-progress-text">{soldPercentage}% of tickets sold</p>
                     </div>
                 </div>
             </div>

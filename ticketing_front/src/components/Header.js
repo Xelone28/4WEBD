@@ -44,7 +44,7 @@ const Header = () => {
                 <div className='header-links'>
                     <nav>
                         <ul>
-                            <li onClick={() => { navigate("/"); }}>Billets</li>
+                            <li onClick={() => { navigate("/"); }}>Tickets</li>
                         </ul>
                     </nav>
                     <div>

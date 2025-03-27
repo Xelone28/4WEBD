@@ -5,7 +5,7 @@ import Profile from "../components/Profile";
 const ProfileView = () => {
 
     return (
-        <div className="profile">
+        <div className="profile-view">
             <Profile/>
         </div>
     );

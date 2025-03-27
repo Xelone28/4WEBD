@@ -93,7 +93,7 @@
     background-color: #c62828;
 }
 
-.profile-view-all-bookings {
+.profile-view-all-tickets {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
@@ -103,7 +103,7 @@
     text-decoration: none;
 }
 
-.profile-view-all-bookings:hover {
+.profile-view-all-tickets:hover {
     color: #ff5722;
 }
 

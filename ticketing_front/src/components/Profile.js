@@ -3,7 +3,7 @@ import "../css/Profile.css";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import { useNavigate, Link } from "react-router-dom";
-import { FaUserEdit, FaTrash, FaSignOutAlt, FaHotel } from "react-icons/fa";
+import { FaUserEdit, FaTrash, FaSignOutAlt, FaTicketAlt } from "react-icons/fa";
 
 
 const Profile = () => {
@@ -68,7 +68,7 @@ const Profile = () => {
         const token = localStorage.getItem("token");
         try {
             const response = await fetch(`${process.env.REACT_APP_API_URL}/users/${user.id}`, { // ✅ Utilisation de l'ID de l'utilisateur
-                method: "PATCH",
+                method: "PUT",
                 headers: {
                     "Authorization": `Bearer ${token}`,
                     "Content-Type": "application/json",
@@ -158,12 +158,12 @@ const Profile = () => {
                         )}
                     </div>
 
-                    {/* My Bookings Card */}
+                    {/* My Tickets Card */}
                     <div className="profile-card">
-                        <h3>My Bookings</h3>
-                        <p>Check your reservations and upcoming stays.</p>
-                        <Link to="" className="profile-view-all-bookings">
-                            <FaHotel /> View My Bookings
+                        <h3>My Tickets</h3>
+                        <p>Check out your upcoming concerts and events.</p>
+                        <Link to="/profile/tickets" className="profile-view-all-tickets">
+                            <FaTicketAlt /> View My Tickets
                         </Link>
                     </div>
                 </div>

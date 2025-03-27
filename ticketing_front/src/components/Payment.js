@@ -41,6 +41,36 @@ const Payment = () => {
         fetchEvent();
     }, [id]);
 
+    const handleBuyTicket = async () => {
+        const ticketData = {
+            ticket_number: `TKT-${Math.floor(Math.random() * 1000000)}`, // Génère un numéro aléatoire
+            event_id: parseInt(id),
+            purchase_date: new Date().toISOString()
+        };
+
+        try {
+            const token = localStorage.getItem("token");
+
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/tickets`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify(ticketData)
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to create ticket");
+            }
+
+            navigate("/profile");
+        } catch (err) {
+            console.error("Error buying ticket:", err);
+            alert("Error: " + err.message);
+        }
+    };
+
     if (error) return <div className="error-message">{error}</div>;
     if (!event) return <div className="loading">Loading event...</div>;
 
@@ -75,7 +105,7 @@ const Payment = () => {
                             <button
                                 type="button"
                                 className="confirm-payment-btn"
-                                onClick={() => alert("Pretend we just bought a ticket 😄")}
+                                onClick={handleBuyTicket}
                             >
                                 Confirm & Buy Ticket
                             </button>

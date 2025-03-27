@@ -55,5 +55,22 @@ database:
   host: "{{ .Release.Name }}-postgres"
   port: 5432
 
+front:
+  image:
+    repository: gabrielti/4webdfront
+    tag: latest
+  replicaCount: 2
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 250m
+      memory: 256Mi
+  service:
+    type: ClusterIP
+    port: 80
+  apiUrl: "http://{{ .Release.Name }}-fastapi-service"
+
 global:
   environment: development

@@ -25,6 +25,7 @@ services:
       - .env
     environment:
       DATABASE_URL: ${DATABASE_URL}
+      RABBITMQ_URL: ${RABBITMQ_URL}
     depends_on:
       - postgres
     ports:

@@ -5,9 +5,9 @@ metadata:
   labels:
     app: {{ .Release.Name }}-front
 spec:
-  type: {{ .Values.front.service.type }}
+  type: LoadBalancer
   ports:
-    - port: {{ .Values.front.service.port }}
+    - port: 80
       targetPort: 80
       protocol: TCP
       name: http

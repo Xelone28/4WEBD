@@ -4,11 +4,10 @@ metadata:
   name: fastapi
   namespace: app
 spec:
-  type: NodePort
+  type: LoadBalancer  # Changez de NodePort à LoadBalancer
   selector:
     app: fastapi
   ports:
   - protocol: TCP
-    port: 8000
-    targetPort: 8000
-    nodePort: 30001
+    port: 80          # Port exposé pour les utilisateurs
+    targetPort: 8000  # Port utilisé par votre application dans les pods

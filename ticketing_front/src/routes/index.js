@@ -7,6 +7,7 @@ import Register from '../views/Register';
 import Profile from '../views/Profile';
 import Payment from '../views/Payment';
 import AdminEvents from '../views/AdminEvents';
+import ProfileTickets from '../views/ProfileTickets';
 
 const AppRoutes = () => {
     return (
@@ -19,6 +20,7 @@ const AppRoutes = () => {
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/payment/:id" element={<Payment />} />
                 <Route path="/events" element={<AdminEvents />} />
+                <Route path="/profile/tickets" element={<ProfileTickets />} />
             </Routes>
         </Router>
     );

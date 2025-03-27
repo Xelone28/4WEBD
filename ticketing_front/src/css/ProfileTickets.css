@@ -15,8 +15,9 @@
 
 .profile-tickets-list {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(2, 1fr); /* max 2 par ligne */
     gap: 1.5rem;
+    justify-content: center;
 }
 
 .profile-tickets-ticket-card {

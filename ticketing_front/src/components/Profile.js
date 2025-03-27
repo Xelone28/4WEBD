@@ -3,7 +3,7 @@ import "../css/Profile.css";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import { useNavigate, Link } from "react-router-dom";
-import { FaUserEdit, FaTrash, FaSignOutAlt, FaTicketAlt } from "react-icons/fa";
+import { FaUserEdit, FaSignOutAlt, FaTicketAlt } from "react-icons/fa";
 
 
 const Profile = () => {
@@ -67,7 +67,7 @@ const Profile = () => {
 
         const token = localStorage.getItem("token");
         try {
-            const response = await fetch(`${process.env.REACT_APP_API_URL}/users/${user.id}`, { // ✅ Utilisation de l'ID de l'utilisateur
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/users/${user.id}`, { 
                 method: "PUT",
                 headers: {
                     "Authorization": `Bearer ${token}`,
@@ -89,34 +89,6 @@ const Profile = () => {
         }
     };
 
-    const handleDeleteAccount = async () => {
-        if (!user || !user.id) {
-            setError("User ID not found. Please refresh the page.");
-            return;
-        }
-
-        const token = localStorage.getItem("token");
-        try {
-            const response = await fetch(`${process.env.REACT_APP_API_URL}/users/${user.id}`, {
-                method: "DELETE",
-                headers: {
-                    "Authorization": `Bearer ${token}`,
-                    "Content-Type": "application/json",
-                },
-            });
-
-            if (!response.ok) {
-                throw new Error("Failed to delete account.");
-            }
-
-            localStorage.removeItem("token");
-            navigate("/register");
-        } catch (error) {
-            console.error(error);
-            setError(error.message);
-        }
-    };
-
     return (
         <>
             <Header />
@@ -124,7 +96,7 @@ const Profile = () => {
             <div className="profile-content">
                 <h2>My Profile</h2>
 
-                {error && <p className="error-message">{error}</p>}
+                {error && <p className="profile-error-message">{error}</p>}
 
                 <div className="profile-cards">
                     {/* User Info Card */}
@@ -137,19 +109,15 @@ const Profile = () => {
                                 <p><strong>Last name:</strong> {user.last_name}</p>
 
                                 <div className="profile-buttons">
-                                    <button className="logout-button" onClick={() => {
+                                    <button className="profile-edit-button" onClick={() => setIsEditing(true)}>
+                                        <FaUserEdit /> Edit
+                                    </button>
+
+                                    <button className="profile-logout-button" onClick={() => {
                                             localStorage.removeItem("token");
                                             navigate("/login");
                                         }}>
                                         <FaSignOutAlt /> Logout
-                                    </button>
-
-                                    <button className="edit-button" onClick={() => setIsEditing(true)}>
-                                        <FaUserEdit /> Edit
-                                    </button>
-
-                                    <button className="delete-button" onClick={handleDeleteAccount}>
-                                        <FaTrash /> Delete Account
                                     </button>
                                 </div>
                             </>
@@ -171,8 +139,8 @@ const Profile = () => {
 
             {/* Edit Profile Modal */}
             {isEditing && (
-                <div className="modal-overlay">
-                    <div className="modal-content">
+                <div className="profile-modal-overlay">
+                    <div className="profile-modal-content">
                         <h3>Edit Profile</h3>
                         <form onSubmit={handleEditSubmit}>
                             <label htmlFor="email">Email*:</label>
@@ -205,9 +173,9 @@ const Profile = () => {
                                 required
                             />
 
-                            <div className="modal-buttons">
-                                <button type="submit" className="save-button">Save</button>
-                                <button type="button" className="cancel-button" onClick={() => setIsEditing(false)}>Cancel</button>
+                            <div className="profile-modal-buttons">
+                                <button type="button" className="profile-cancel-button" onClick={() => setIsEditing(false)}>Cancel</button>
+                                <button type="submit" className="profile-save-button">Save</button>
                             </div>
                         </form>
                     </div>

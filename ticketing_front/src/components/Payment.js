@@ -64,7 +64,7 @@ const Payment = () => {
                 throw new Error("Failed to create ticket");
             }
 
-            navigate("/profile");
+            navigate("/profile/tickets");
         } catch (err) {
             console.error("Error buying ticket:", err);
             alert("Error: " + err.message);

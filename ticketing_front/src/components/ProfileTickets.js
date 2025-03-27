@@ -20,80 +20,62 @@ const formatDate = (dateStr) => {
     return `${date.toLocaleDateString("en-US", options)} at ${date.toLocaleTimeString("en-US", timeOptions)}`;
 };
 
-const mockTickets = [
-    {
-        id: 1,
-        ticket_number: "ABC123456",
-        purchase_date: "2025-06-21T19:00:00",
-        event_id: 1,
-        user_id: 1,
-        event_name: "Coldplay - World Tour",
-        location: "Paris, Accor Arena"
-    },
-    {
-        id: 2,
-        ticket_number: "XYZ987654",
-        purchase_date: "2025-07-10T20:30:00",
-        event_id: 2,
-        user_id: 1,
-        event_name: "Imagine Dragons Live",
-        location: "Lyon, Halle Tony Garnier"
-    }
-];
-
 const ProfileTickets = () => {
     const navigate = useNavigate();
-    const [tickets, setTickets] = useState([]);
+    const [rawTickets, setRawTickets] = useState([]); // ← tickets sans infos enrichies
+    const [tickets, setTickets] = useState([]); // ← tickets enrichis avec event_name, location, etc.
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [ticketToDelete, setTicketToDelete] = useState(null);
 
-    // useEffect(() => {
-    //     const fetchTickets = async () => {
-    //         const token = localStorage.getItem("token");
-    //         if (!token) {
-    //             navigate("/login");
-    //             return;
-    //         }
+    // Fetch tickets (bruts)
+    useEffect(() => {
+        const fetchTickets = async () => {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                navigate("/login");
+                return;
+            }
 
-    //         try {
-    //             const userResponse = await fetch(`${process.env.REACT_APP_API_URL}/users/me`, {
-    //                 headers: { Authorization: `Bearer ${token}` },
-    //             });
-    //             if (!userResponse.ok) throw new Error("Failed to fetch user.");
+            try {
+                const userResponse = await fetch(`${process.env.REACT_APP_API_URL}/users/me`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+                if (!userResponse.ok) throw new Error("Failed to fetch user.");
 
-    //             const userData = await userResponse.json();
+                const userData = await userResponse.json();
 
-    //             const ticketsResponse = await fetch(`${process.env.REACT_APP_API_URL}/tickets/user/${userData.id}`, {
-    //                 headers: { Authorization: `Bearer ${token}` },
-    //             });
-    //             if (!ticketsResponse.ok) throw new Error("Failed to fetch tickets.");
+                const ticketsResponse = await fetch(`${process.env.REACT_APP_API_URL}/tickets/user/${userData.id}`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+                if (!ticketsResponse.ok) throw new Error("Failed to fetch tickets.");
 
-    //             const data = await ticketsResponse.json();
-    //             setTickets(data);
-    //         } catch (err) {
-    //             setError(err.message);
-    //         } finally {
-    //             setLoading(false);
-    //         }
-    //     };
+                const data = await ticketsResponse.json();
+                setRawTickets(data); // ← stock brut
+            } catch (err) {
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
 
-    //     fetchTickets();
-    // }, [navigate]);
+        fetchTickets();
+    }, [navigate]);
 
+    // Enrichir les tickets avec les infos d’événement
     useEffect(() => {
         const enrichTicketsWithEventData = async () => {
-            try {
-                const baseTickets = mockTickets;
+            if (rawTickets.length === 0) return;
 
+            try {
                 const enrichedTickets = await Promise.all(
-                    baseTickets.map(async (ticket) => {
+                    rawTickets.map(async (ticket) => {
                         try {
                             const res = await fetch(`${process.env.REACT_APP_API_URL}/events/${ticket.event_id}`);
                             if (!res.ok) throw new Error("Event not found");
                             const eventData = await res.json();
-                            console.log(eventData);
+
                             return {
                                 ...ticket,
                                 event_name: eventData.name,
@@ -115,13 +97,11 @@ const ProfileTickets = () => {
             } catch (err) {
                 setError("Failed to enrich tickets with event data.");
                 console.error(err);
-            } finally {
-                setLoading(false);
             }
         };
 
         enrichTicketsWithEventData();
-    }, []);
+    }, [rawTickets]);
 
     const handleDeleteTicket = async () => {
         const token = localStorage.getItem("token");
@@ -132,10 +112,10 @@ const ProfileTickets = () => {
                     Authorization: `Bearer ${token}`,
                 },
             });
-    
+
             if (!response.ok) throw new Error("Failed to delete ticket");
-    
-            setTickets(prev => prev.filter(t => t.id !== ticketToDelete.id));
+
+            setRawTickets(prev => prev.filter(t => t.id !== ticketToDelete.id));
             setIsDeleteModalOpen(false);
             setTicketToDelete(null);
         } catch (err) {
@@ -143,7 +123,6 @@ const ProfileTickets = () => {
             setError("Could not delete ticket.");
         }
     };
-
 
     return (
         <>

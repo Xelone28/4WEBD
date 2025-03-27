@@ -28,3 +28,5 @@ spec:
           value: "guest"
         - name: RABBITMQ_PASSWORD
           value: "guest"
+        - name: RABBITMQ_URL
+          value: "amqp://guest:guest@{{ .Release.Name }}-rabbitmq:5672/"

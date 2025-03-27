@@ -1,11 +1,8 @@
-# schemas/ticket_schemas.py
-
 from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime
 
 class TicketBase(BaseModel):
-    ticket_number: str
     event_id: int
     purchase_date: Optional[datetime] = None
 
@@ -14,9 +11,11 @@ class TicketCreate(TicketBase):
 
 class TicketRead(TicketBase):
     id: int
+    ticket_number: str
     user_id: int
     created_at: datetime
     updated_at: datetime
+    event_id: int
 
     class Config:
         orm_mode = True

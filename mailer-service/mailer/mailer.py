@@ -28,13 +28,13 @@ QUEUE_NAME = os.getenv('RABBITMQ_QUEUE', 'email_queue')
 # SMTP configurations
 SMTP_HOST = os.getenv('SMTP_HOST', 'smtp.gmail.com')
 SMTP_PORT = int(os.getenv('SMTP_PORT', 587))
-SMTP_USER = os.getenv('SMTP_USER')  # e.g., your_email@gmail.com
-SMTP_PASS = os.getenv('SMTP_PASS')  # Your App Password
-FROM_EMAIL = os.getenv('FROM_EMAIL')  # e.g., your_email@gmail.com
+SMTP_USER = os.getenv('SMTP_USER') 
+SMTP_PASS = os.getenv('SMTP_PASS') 
+FROM_EMAIL = os.getenv('FROM_EMAIL')
 
 # Reconnection configurations
-RECONNECT_DELAY_INITIAL = int(os.getenv('RECONNECT_DELAY_INITIAL', 5))  # Initial delay in seconds
-RECONNECT_DELAY_MAX = int(os.getenv('RECONNECT_DELAY_MAX', 60))        # Maximum delay in seconds
+RECONNECT_DELAY_INITIAL = int(os.getenv('RECONNECT_DELAY_INITIAL', 5))
+RECONNECT_DELAY_MAX = int(os.getenv('RECONNECT_DELAY_MAX', 60))
 
 # Debugging: Log loaded configurations (excluding sensitive information)
 logger.debug(f"RABBITMQ_URL: {RABBITMQ_URL}")

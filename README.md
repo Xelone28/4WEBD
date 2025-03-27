@@ -12,3 +12,5 @@ In order to start the differents applications from a production point of view. P
 Also, it is possible to run all services from docker in a developement environement : ```docker compose up --build -d```
 
 All images are visible from [Docker registry](https://hub.docker.com/u/gabrielti)
+
+Please note that you need to create .env from the .env-example with the correct values (that are already put in there hum hum)

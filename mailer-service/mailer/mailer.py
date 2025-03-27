@@ -11,12 +11,10 @@ import logging
 from aio_pika import ExchangeType, exceptions
 import signal
 
-# Load environment variables from .env file
 load_dotenv()
 
-# Configure logging
 logging.basicConfig(
-    level=logging.DEBUG,  # Changed to DEBUG for detailed logs
+    level=logging.DEBUG,
     format='%(asctime)s [%(levelname)s] %(name)s: %(message)s'
 )
 logger = logging.getLogger("MailerService")

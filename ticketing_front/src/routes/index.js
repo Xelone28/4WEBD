@@ -6,6 +6,7 @@ import Login from '../views/Login';
 import Register from '../views/Register';
 import Profile from '../views/Profile';
 import Payment from '../views/Payment';
+import AdminEvents from '../views/AdminEvents';
 
 const AppRoutes = () => {
     return (
@@ -17,6 +18,7 @@ const AppRoutes = () => {
                 <Route path="/register" element={<Register />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/payment/:id" element={<Payment />} />
+                <Route path="/events" element={<AdminEvents />} />
             </Routes>
         </Router>
     );

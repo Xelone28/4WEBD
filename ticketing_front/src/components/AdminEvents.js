@@ -3,7 +3,7 @@ import Footer from "../components/Footer";
 import Header from "../components/Header";
 import "../css/AdminEvents.css"; 
 import { useNavigate, Link } from "react-router-dom";
-import { FaEdit, FaTrash, FaPlus, FaBed } from "react-icons/fa";
+import { FaChevronRight, FaEdit, FaTrash, FaPlus, FaBed } from "react-icons/fa";
 
 const AdminEvents = () => {
     const navigate = useNavigate();
@@ -171,6 +171,12 @@ const AdminEvents = () => {
             <Header />
 
             <div className="admin-events-content">
+                <nav className="breadcrumb">
+                    <Link to="/admin" className="breadcrumb-link">Admin Dashboard</Link>
+                    <FaChevronRight className="breadcrumb-icon" />
+                    <span className="breadcrumb-current">Events Management</span>
+                </nav>
+
                 <h2>Events Management</h2>
 
                 <div className="admin-events-create-button">

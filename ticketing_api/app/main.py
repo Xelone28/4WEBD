@@ -42,9 +42,9 @@ def custom_openapi():
         return app.openapi_schema
 
     openapi_schema = get_openapi(
-        title="FastAPI Hotel Booking",
+        title="FastAPI 4WEBD",
         version="1.0.0",
-        description="API for hotel booking with JWT authentication",
+        description="API for ticket reservation",
         routes=app.routes,
     )
 

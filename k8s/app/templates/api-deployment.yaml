@@ -6,20 +6,18 @@ spec:
   replicas: {{ .Values.api.replicaCount }}
   selector:
     matchLabels:
-      app: api
+      app: fastapi
   template:
     metadata:
       labels:
-        app: api
+        app: fastapi
     spec:
       containers:
-      - name: api
+      - name: fastapi
         image: "{{ .Values.api.image.repository }}:{{ .Values.api.image.tag }}"
         ports:
         - containerPort: 8000
         env:
-        - name: TEST_VAR
-          value: "sdfghjkl"
         - name: DATABASE_URL
           value: "postgresql+asyncpg://pgsql_webd:pgsql_webd@app-postgres:5432/webd"
         - name: RABBITMQ_HOST
@@ -30,23 +28,3 @@ spec:
           value: "guest"
         - name: RABBITMQ_PASSWORD
           value: "guest"
-
-        # resources:
-        #   limits:
-        #     cpu: {{ .Values.api.resources.limits.cpu }}
-        #     memory: {{ .Values.api.resources.limits.memory }}
-        #   requests:
-        #     cpu: {{ .Values.api.resources.requests.cpu }}
-        #     memory: {{ .Values.api.resources.requests.memory }}
-        # readinessProbe:
-        #   httpGet:
-        #     path: /health
-        #     port: 8000
-        #   initialDelaySeconds: 10
-        #   periodSeconds: 5
-        # livenessProbe:
-        #   httpGet:
-        #     path: /health
-        #     port: 8000
-        #   initialDelaySeconds: 15
-        #   periodSeconds: 10

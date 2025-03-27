@@ -3,6 +3,7 @@ import '../css/Home.css';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
 import EventCard from "../components/EventCard";
+import SearchBar from '../components/SearchBar';
 
 const Home = () => {
     const [events, setEvents] = useState([]);
@@ -32,22 +33,32 @@ const Home = () => {
         fetchEvents();
     }, []);
 
+    const handleSearch = (searchResults) => {
+        setEvents(searchResults);
+    };
+
     return (
         <>
             <Header />
 
             <div className="home-component">
-                {/* Display Events */}
-                <div className="events-list">
-                    {loading ? (
-                        <p>Loading events...</p>
-                    ) : error ? (
-                        <p className="error-message">{error}</p>
-                    ) : events.length > 0 ? (
-                        events.map((event) => <EventCard key={event.id} event={event} />)
-                    ) : (
-                        <p>No events found. Try a different search.</p>
-                    )}
+
+                <SearchBar onSearch={handleSearch} />
+
+                <div className="home-container">
+
+                    {/* Display Events */}
+                    <div className="events-list">
+                        {loading ? (
+                            <p>Loading events...</p>
+                        ) : error ? (
+                            <p className="error-message">{error}</p>
+                        ) : events.length > 0 ? (
+                            events.map((event) => <EventCard key={event.id} event={event} />)
+                        ) : (
+                            <p>No events found. Try a different search.</p>
+                        )}
+                    </div>
                 </div>
             </div>
 

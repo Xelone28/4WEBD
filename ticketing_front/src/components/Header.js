@@ -52,7 +52,7 @@ const Header = () => {
                         <ul>
                             <li onClick={() => { navigate("/"); }}>Tickets</li>
                             {isAdmin && (
-                                <li onClick={() => { navigate("/events"); }}>Events</li>
+                                <li onClick={() => { navigate("/admin"); }}>Admin</li>
                             )}
                         </ul>
                     </nav>
